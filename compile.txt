@@ -1,0 +1,1 @@
+nvcc -O3 -I"C:\Users\kotkh\Downloads\OpenBLAS-0.3.27-x64-64\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\include" Lab2.cu -o main.exe -L"C:\Users\kotkh\Downloads\OpenBLAS-0.3.27-x64-64\lib" -L"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\lib\x64" -llibopenblas -lcudart -lcublas
