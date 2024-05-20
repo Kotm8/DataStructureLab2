@@ -12,7 +12,7 @@
 #include <cuda.h>
 #include <device_launch_parameters.h>
 #include <complex>
-const int N = 4096;
+const int N = 8192;
 
 using namespace std;
 
@@ -33,27 +33,21 @@ void matrixMultiply(thrust::complex<double>* A, thrust::complex<double>* B, thru
     thrust::complex<double>* d_A, * d_B, * d_C;
     size_t size = N * N * sizeof(thrust::complex<double>);
 
-    // Allocate device memory
     cudaMalloc(&d_A, size);
     cudaMalloc(&d_B, size);
     cudaMalloc(&d_C, size);
 
-    // Copy matrices to the device
     cudaMemcpy(d_A, A, size, cudaMemcpyHostToDevice);
     cudaMemcpy(d_B, B, size, cudaMemcpyHostToDevice);
 
-    // Define grid and block dimensions
     dim3 threadsPerBlock(32, 32);
     dim3 blocksPerGrid((N + threadsPerBlock.x - 1) / threadsPerBlock.x,
         (N + threadsPerBlock.y - 1) / threadsPerBlock.y);
 
-    // Launch the kernel
     matrix_mul << <blocksPerGrid, threadsPerBlock >> > (d_A, d_B, d_C, N);
 
-    // Copy the result back to the host
     cudaMemcpy(C, d_C, size, cudaMemcpyDeviceToHost);
 
-    // Free device memory
     cudaFree(d_A);
     cudaFree(d_B);
     cudaFree(d_C);
@@ -153,8 +147,8 @@ int main() {
         cout << "c1 != c2 matrix test failed\n";
     cout << "p1/p2 = " << (p1 / p2) * 100 << "%" << endl;
 
-    //3 -- cuda solution
 
+    //3 -- cuda solution
     start = chrono::high_resolution_clock::now();
     thrust::complex<double>* d_a = new thrust::complex<double>[N * N];
     thrust::complex<double>* d_b = new thrust::complex<double>[N * N];
@@ -184,12 +178,6 @@ int main() {
         cout << "c3 == c2 matrix test ok\n";
     else
         cout << "c3 != c2 matrix test failed\n";
-
-
-    //for (int j = 0; j < N; j++)
-    //{
-    //    cout << c3[j][0] << endl;
-    //}
 
 
     cin.get();
